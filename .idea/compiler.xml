@@ -22,7 +22,32 @@
         <module name="commande-service" />
         <module name="produit-service" />
         <module name="livreur-service" />
+      </profile>
+      <profile name="Annotation profile for client-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
         <module name="client-service" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="billing-service.main" />
+      </profile>
+      <profile name="Annotation profile for billing-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="billing-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -30,6 +55,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Cors" options="-parameters" />
       <module name="DeliveryTracking" options="-parameters" />
+      <module name="billing-service" options="-parameters" />
       <module name="client-service" options="-parameters" />
       <module name="commande-service" options="-parameters" />
       <module name="discovery" options="-parameters" />

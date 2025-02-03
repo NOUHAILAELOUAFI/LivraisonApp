@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/billing-service" />
     <file type="web" url="file://$PROJECT_DIR$/client-service" />
   </component>
   <component name="MavenProjectsManager">
@@ -17,6 +18,7 @@
         <option value="$PROJECT_DIR$/livreur-service/pom.xml" />
         <option value="$PROJECT_DIR$/DeliveryTracking/pom.xml" />
         <option value="$PROJECT_DIR$/Cors/pom.xml" />
+        <option value="$PROJECT_DIR$/billing-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -26,7 +28,7 @@
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

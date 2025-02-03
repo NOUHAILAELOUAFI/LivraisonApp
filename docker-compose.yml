@@ -1,0 +1,123 @@
+version: '3.8'
+services:
+  client-service:
+    build: ./client-service
+    container_name: client-service
+    ports:
+      - '8081:8081'
+    expose:
+      - '8081'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=Client
+    depends_on:
+      - discovery-service
+      - mongodb
+
+  discovery-service:
+    build: ./discovery
+    container_name: discovery-service
+    ports:
+      - '8761:8761'
+    expose:
+      - '8761'
+
+  gateway-service:
+    build: ./gateway
+    container_name: gateway-service
+    ports:
+      - '8888:8888'
+    expose:
+      - '8888'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
+
+  delivery-tracking-service:
+    build: ./DeliveryTracking
+    container_name: delivery-tracking-service
+    ports:
+      - '8085:8085'
+    expose:
+      - '8085'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
+
+  commande-service:
+    build: ./commande-service
+    container_name: commande-service
+    ports:
+      - '8082:8082'
+    expose:
+      - '8082'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=Commandes
+    depends_on:
+      - discovery-service
+      - mongodb
+
+  produit-service:
+    build: ./produit-service
+    container_name: produit-service
+    ports:
+      - '8083:8083'
+    expose:
+      - '8083'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=Produits
+    depends_on:
+      - discovery-service
+      - mongodb
+  livreur-service:
+    build: ./livreur-service
+    container_name: livreur-service
+    ports:
+      - '8084:8084'
+    expose:
+      - '8084'
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=Livreur
+    depends_on:
+      - discovery-service
+      - mongodb
+
+  billing-service:
+    build: ./billing-service
+    container_name: billing-service
+    ports:
+      - "8087:8087"
+    expose:
+      - '8087'
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=billing
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - mongodb
+      - discovery-service
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
