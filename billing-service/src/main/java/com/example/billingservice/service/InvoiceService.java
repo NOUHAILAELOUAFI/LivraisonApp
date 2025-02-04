@@ -11,6 +11,7 @@ import com.example.billingservice.repository.InvoiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,6 @@ public class InvoiceService {
     @Autowired
     private ProduitServiceClient produitServiceClient;
 
-    @Autowired
-    private JasperReportGenerator reportGenerator;
 
     public Invoice createInvoice(String idCmd) {
         try {
@@ -64,16 +63,13 @@ public class InvoiceService {
                     .items(invoiceItems)
                     .orderAmount(orderAmount)
                     .deliveryFee(deliveryFee)
-                    .totalAmount(orderAmount + deliveryFee)
+                    .totalAmount(Double.valueOf(orderAmount + deliveryFee))
                     .createdAt(LocalDateTime.now())
-                    .isPaid(false)
+                    .isPaid(Boolean.FALSE)
                     .build();
 
-            // Générer le PDF
-            String pdfUrl = reportGenerator.generateInvoicePdf(invoice);
-            invoice.setPdfUrl(pdfUrl);
-
-            return invoiceRepository.save(invoice);
+            invoiceRepository.save(invoice);
+            return invoice;
 
         } catch (Exception e) {
             log.error("Erreur lors de la création de la facture pour la commande: " + idCmd, e);

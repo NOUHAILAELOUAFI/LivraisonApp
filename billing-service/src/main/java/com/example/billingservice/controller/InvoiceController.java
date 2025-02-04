@@ -5,35 +5,60 @@ import com.example.billingservice.dto.InvoiceDTO;
 import com.example.billingservice.dto.InvoiceItemDTO;
 import com.example.billingservice.entity.Invoice;
 import com.example.billingservice.entity.InvoiceItem;
+import com.example.billingservice.service.InvoicePdfService;
 import com.example.billingservice.service.InvoiceService;
-import com.example.billingservice.service.JasperReportGenerator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+@Slf4j
 @RestController
 @RequestMapping("/factures")
 public class InvoiceController {
+    @Autowired
+    private InvoicePdfService invoicePdfService;
+
+    @GetMapping(value = "/generate/{idCmd}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> testPdfGeneration(@PathVariable String idCmd) {
+        try {
+            // Create a test invoice
+            Invoice invoice = new Invoice();
+            invoice = invoiceService.createInvoice(idCmd);
+            log.info(invoice.toString());
+
+            String pdfFilePath = invoicePdfService.generateInvoicePdf(invoice);
+
+            // Read PDF file into bytes
+            byte[] pdfBytes = Files.readAllBytes(Paths.get(pdfFilePath));
+
+            // Return PDF with proper headers
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=invoice.pdf")
+                    .body(pdfBytes);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @Autowired
     private InvoiceService invoiceService;
 
-    private JasperReportGenerator reportGenerator;
-
-    @PostMapping("/generate/{idCmd}")
-    public ResponseEntity<InvoiceDTO> generateInvoice(@PathVariable String idCmd) {
-        Invoice invoice = invoiceService.createInvoice(idCmd);
-        return ResponseEntity.ok(convertToDTO(invoice));
-    }
     @GetMapping("/client/{idClient}")
     public ResponseEntity<List<InvoiceDTO>> getClientInvoices(@PathVariable String idClient) {
         List<Invoice> invoices = invoiceService.getClientInvoices(idClient);
@@ -43,22 +68,7 @@ public class InvoiceController {
         return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping("/{id}/pdf")
-    public ResponseEntity<Resource> generateAndGetInvoicePdf(@PathVariable String id) {
-        try {
-            Invoice invoice = invoiceService.getInvoice(id);
-            String fileName = reportGenerator.generateInvoicePdf(invoice);
-            Path path = Paths.get("src/main/resources/static/pdf/" + fileName);
-            Resource resource = new FileSystemResource(path);
 
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 
     private InvoiceDTO convertToDTO(Invoice invoice) {
         return InvoiceDTO.builder()
