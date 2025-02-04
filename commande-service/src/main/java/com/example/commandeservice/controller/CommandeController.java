@@ -43,6 +43,10 @@ public class CommandeController {
         List<Commande> cmd= commandeRepository.findAll();
         return getCommandes(cmd);
     }
+    @GetMapping("/commandes/{idCmd}")
+    public Commande getCommande(@PathVariable String idCmd){
+        return commandeRepository.findById(idCmd).get();
+    }
 
     @GetMapping("/commandes/livr/{id}")
     public List<Commande> getcmdbyLivr(@PathVariable(name = "id") String id){
